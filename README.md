@@ -9,6 +9,8 @@ OAuth2ResourceOwnerPasswordAuthenticationProvider. These classes are present in 
 supported classes. Right now these classes are package protected in spring. That's why I just made a copy of those classes and use it. May be in future version of 
 SpringAuthorizationServer these classes will make public so then there will be no need of these classes.
 
+In SpringAuthorizationServerClient project. Class WebClientConfig has the configuration for password grant type support (contextAttributesMapper). Changes can be done according to need.
+
 All are eclipse based gradle projects. All the settings are in application.properties file for all three projects. Like contextpath, port etc. SpringAuthorizationServer is 
 using H2 database. 
 
