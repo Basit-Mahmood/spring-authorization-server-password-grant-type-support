@@ -1,5 +1,7 @@
 package pk.training.basit.service.impl;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -8,16 +10,15 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.OAuth2TokenType;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.server.authorization.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.authentication.OAuth2ClientAuthenticationToken;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import pk.training.basit.jpa.entity.UserPrincipal;
-import pk.training.basit.oauth2.authentication.OAuth2ResourceOwnerPasswordAuthenticationProvider;
 import pk.training.basit.service.JwtCustomizer;
 
 @Service
@@ -37,27 +38,41 @@ public class JwtCustomizerServiceImpl implements JwtCustomizer {
     	if (token != null) {
     		
     		if (token.isAuthenticated() && OAuth2TokenType.ACCESS_TOKEN.equals(context.getTokenType())) {
-    			Authentication usernamePasswordAuthentication = null;
-    			AuthorizationGrantType authorizationGrantType = context.getAuthorizationGrantType();
-        		if (authorizationGrantType == AuthorizationGrantType.AUTHORIZATION_CODE) {
-        			usernamePasswordAuthentication = context.getPrincipal();
-        		}
-        		
-        		if (authorizationGrantType == AuthorizationGrantType.PASSWORD) {
-        			usernamePasswordAuthentication = context.get(OAuth2ResourceOwnerPasswordAuthenticationProvider.USERNAME_PASSWORD_AUTHENTICATION_KEY);	
-        		}
-        		
-        		if (usernamePasswordAuthentication != null && usernamePasswordAuthentication instanceof UsernamePasswordAuthenticationToken) {
-        			UserPrincipal principal = (UserPrincipal)usernamePasswordAuthentication.getPrincipal();
-    				Long userId = principal.getId();
-    				Set<String> authorities = principal.getAuthorities().stream()
-    						.map(GrantedAuthority::getAuthority)
-    						.collect(Collectors.toSet());
+    			
+    			Authentication authentication = context.getPrincipal();
+    			
+    			if (authentication != null) {
     				
-    				JwtClaimsSet.Builder jwtClaimSetBuilder = context.getClaims();
-        			jwtClaimSetBuilder.claim(OAuth2ParameterNames.SCOPE, authorities);
-        			jwtClaimSetBuilder.claim("userId", userId);
-        		}
+    				if (authentication instanceof UsernamePasswordAuthenticationToken) {
+    					UserPrincipal principal = (UserPrincipal)authentication.getPrincipal();
+        				Long userId = principal.getId();
+        				Set<String> authorities = principal.getAuthorities().stream()
+        						.map(GrantedAuthority::getAuthority)
+        						.collect(Collectors.toSet());
+        				
+        				Map<String, Object> userAttributes = new HashMap<>();
+        				userAttributes.put("userId", userId);
+        				
+        				JwtClaimsSet.Builder jwtClaimSetBuilder = context.getClaims();
+        				jwtClaimSetBuilder.claim(OAuth2ParameterNames.SCOPE, authorities);
+        				jwtClaimSetBuilder.claims(claims ->
+        					userAttributes.entrySet().stream()
+        					.forEach(entry -> claims.put(entry.getKey(), entry.getValue()))
+        				);
+    				}
+    				
+    				if (authentication instanceof OAuth2ClientAuthenticationToken) {
+    					OAuth2ClientAuthenticationToken OAuth2ClientAuthenticationToken = (OAuth2ClientAuthenticationToken)authentication;
+    					Map<String, Object> additionalParameters = OAuth2ClientAuthenticationToken.getAdditionalParameters();
+    					
+    					// customize the token according to your need for this kind of authentication
+    					if (!CollectionUtils.isEmpty(additionalParameters)) {
+    						
+    					}
+    					
+    				}
+    					
+    			}
     		}
     	}
 		

@@ -3,6 +3,7 @@ package pk.training.basit.oauth2.authentication;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -29,6 +30,7 @@ import org.springframework.security.oauth2.core.OAuth2TokenType;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.oauth2.jwt.JoseHeader;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtClaimNames;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.server.authorization.JwtEncodingContext;
@@ -47,8 +49,6 @@ public class OAuth2ResourceOwnerPasswordAuthenticationProvider implements Authen
 	private static final Logger LOGGER = LogManager.getLogger(OAuth2ResourceOwnerPasswordAuthenticationProvider.class);
 	
 	private static final StringKeyGenerator DEFAULT_REFRESH_TOKEN_GENERATOR = new Base64StringKeyGenerator(Base64.getUrlEncoder().withoutPadding(), 96);
-	
-	public static final String USERNAME_PASSWORD_AUTHENTICATION_KEY = UsernamePasswordAuthenticationToken.class.getName().concat(".PRINCIPAL");
 	
 	private final AuthenticationManager authenticationManager;
 	private final OAuth2AuthorizationService authorizationService;
@@ -125,12 +125,11 @@ public class OAuth2ResourceOwnerPasswordAuthenticationProvider implements Authen
 
 			JwtEncodingContext context = JwtEncodingContext.with(headersBuilder, claimsBuilder)
 					.registeredClient(registeredClient)
-					.principal(clientPrincipal)
+					.principal(usernamePasswordAuthentication)
 					.authorizedScopes(authorizedScopes)
 					.tokenType(OAuth2TokenType.ACCESS_TOKEN)
 					.authorizationGrantType(AuthorizationGrantType.PASSWORD)
 					.authorizationGrant(resouceOwnerPasswordAuthentication)
-					.put(USERNAME_PASSWORD_AUTHENTICATION_KEY, usernamePasswordAuthentication)
 					.build();
 
 			this.jwtCustomizer.customize(context);
@@ -139,6 +138,9 @@ public class OAuth2ResourceOwnerPasswordAuthenticationProvider implements Authen
 			JwtClaimsSet claims = context.getClaims().build();
 			Jwt jwtAccessToken = this.jwtEncoder.encode(headers, claims);
 
+			// Use the scopes after customizing the token
+			authorizedScopes = claims.getClaim(OAuth2ParameterNames.SCOPE);
+			
 			OAuth2AccessToken accessToken = new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER,
 					jwtAccessToken.getTokenValue(), jwtAccessToken.getIssuedAt(),
 					jwtAccessToken.getExpiresAt(), authorizedScopes);
@@ -163,8 +165,22 @@ public class OAuth2ResourceOwnerPasswordAuthenticationProvider implements Authen
 			OAuth2Authorization authorization = authorizationBuilder.build();
 			
 			this.authorizationService.save(authorization);
+			
+			LOGGER.debug("OAuth2Authorization saved successfully");
+			
+			Map<String, Object> tokenAdditionalParameters = new HashMap<>();
+			claims.getClaims().forEach((key, value) -> {
+				if (!key.equals(OAuth2ParameterNames.SCOPE) && 
+						!key.equals(JwtClaimNames.IAT) && 
+						!key.equals(JwtClaimNames.EXP) &&
+						!key.equals(JwtClaimNames.NBF)) {
+					tokenAdditionalParameters.put(key, value);
+				}
+			});
+			
+			LOGGER.debug("returning OAuth2AccessTokenAuthenticationToken");
 
-			return new OAuth2AccessTokenAuthenticationToken(registeredClient, clientPrincipal, accessToken, refreshToken);
+			return new OAuth2AccessTokenAuthenticationToken(registeredClient, clientPrincipal, accessToken, refreshToken, tokenAdditionalParameters);
 			
 		} catch (Exception ex) {
 			LOGGER.error("problem in authenticate", ex);

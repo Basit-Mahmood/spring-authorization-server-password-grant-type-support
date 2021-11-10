@@ -43,6 +43,7 @@ import com.nimbusds.jose.proc.SecurityContext;
 
 import pk.training.basit.configuration.jose.Jwks;
 import pk.training.basit.jackson2.mixin.AuditDeletedDateMixin;
+import pk.training.basit.jackson2.mixin.LongMixin;
 import pk.training.basit.jackson2.mixin.UserAuthorityMixin;
 import pk.training.basit.jackson2.mixin.UserPrincipalMixin;
 import pk.training.basit.jpa.audit.AuditDeletedDate;
@@ -126,6 +127,7 @@ public class AuthorizationServerConfiguration {
 		objectMapper.addMixIn(UserAuthority.class, UserAuthorityMixin.class);
 		objectMapper.addMixIn(UserPrincipal.class, UserPrincipalMixin.class);
 		objectMapper.addMixIn(AuditDeletedDate.class, AuditDeletedDateMixin.class);
+		objectMapper.addMixIn(Long.class, LongMixin.class);
 		
 		rowMapper.setObjectMapper(objectMapper);
 		service.setAuthorizationRowMapper(rowMapper);
