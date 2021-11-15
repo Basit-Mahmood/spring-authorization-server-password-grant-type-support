@@ -1,5 +1,6 @@
 package pk.training.basit.oauth2.authentication;
 
+import java.security.Principal;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Base64;
