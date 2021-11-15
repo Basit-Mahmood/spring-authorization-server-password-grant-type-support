@@ -1,5 +1,6 @@
 package pk.training.basit.oauth2.authentication;
 
+import java.security.Principal;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Base64;
@@ -156,7 +157,8 @@ public class OAuth2ResourceOwnerPasswordAuthenticationProvider implements Authen
 					.token(accessToken,
 							(metadata) ->
 									metadata.put(OAuth2Authorization.Token.CLAIMS_METADATA_NAME, jwtAccessToken.getClaims()))
-					.attribute(OAuth2Authorization.AUTHORIZED_SCOPE_ATTRIBUTE_NAME, authorizedScopes);
+					.attribute(OAuth2Authorization.AUTHORIZED_SCOPE_ATTRIBUTE_NAME, authorizedScopes)
+					.attribute(Principal.class.getName(), usernamePasswordAuthentication);;
 
 			if (refreshToken != null) {
 				authorizationBuilder.refreshToken(refreshToken);
