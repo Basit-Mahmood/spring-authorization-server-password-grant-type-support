@@ -158,7 +158,7 @@ public class OAuth2ResourceOwnerPasswordAuthenticationProvider implements Authen
 							(metadata) ->
 									metadata.put(OAuth2Authorization.Token.CLAIMS_METADATA_NAME, jwtAccessToken.getClaims()))
 					.attribute(OAuth2Authorization.AUTHORIZED_SCOPE_ATTRIBUTE_NAME, authorizedScopes)
-					.attribute(Principal.class.getName(), usernamePasswordAuthentication);;
+					.attribute(Principal.class.getName(), usernamePasswordAuthentication);
 
 			if (refreshToken != null) {
 				authorizationBuilder.refreshToken(refreshToken);
