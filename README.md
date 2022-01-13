@@ -18,7 +18,7 @@ These are the same projects offered by Spring. I just add the Password grant typ
 for it becasue of OAuth2.1 draft.
 
 This project is just showing how you can add custom grant type in the SpringAuthorizationServer. Like in my case I added password grant type support to use in my project. Changes
-can be made according to need in the code. Right now it is using version 0.2.0 which is the latest version. Things can be change in upcoming versions of Spring authorization 
+can be made according to need in the code. Right now it is using version 0.2.1 which is the latest version. Things can be change in upcoming versions of Spring authorization 
 server. So if you update the version in future and have some problem then ask on the Spring forum. 
 
 This project is just for demonstration purpose to add custom grant type.
