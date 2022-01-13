@@ -1,5 +1,5 @@
 plugins {
-	id 'org.springframework.boot' version '2.5.6'
+	id 'org.springframework.boot' version '2.6.2'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
 	id 'war'
@@ -23,7 +23,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	implementation 'org.springframework.security:spring-security-oauth2-authorization-server:0.2.0'
+	implementation 'org.springframework.security:spring-security-oauth2-authorization-server:0.2.1'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
 	implementation group: webjarsGroupId, name: 'webjars-locator', version: '0.42'

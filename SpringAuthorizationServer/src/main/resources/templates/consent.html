@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="https://www.thymeleaf.org" 
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 	<head>
 	    <meta charset="utf-8">
 	    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -32,12 +34,12 @@
 	    </div>
 	    <div class="row">
 	        <div class="col text-center">
-	            <form method="post" action="/oauth2/authorize">
+	            <form method="post" th:action="@{/oauth2/authorize}">
 	                <input type="hidden" name="client_id" th:value="${clientId}">
 	                <input type="hidden" name="state" th:value="${state}">
 	
 	                <div th:each="scope: ${scopes}" class="form-group form-check py-1">
-	                    <input class="form-check-input"
+	                    <input class="form-check-input float-none"
 	                           type="checkbox"
 	                           name="scope"
 	                           th:value="${scope.scope}"
@@ -48,7 +50,7 @@
 	
 	                <p th:if="${not #lists.isEmpty(previouslyApprovedScopes)}">You have already granted the following permissions to the above app:</p>
 	                <div th:each="scope: ${previouslyApprovedScopes}" class="form-group form-check py-1">
-	                    <input class="form-check-input"
+	                    <input class="form-check-input float-none"
 	                           type="checkbox"
 	                           th:id="${scope.scope}"
 	                           disabled

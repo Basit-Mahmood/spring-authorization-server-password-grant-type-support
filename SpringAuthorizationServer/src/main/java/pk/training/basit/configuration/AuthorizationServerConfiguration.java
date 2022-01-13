@@ -56,6 +56,8 @@ import pk.training.basit.service.JwtCustomizer;
 @Configuration(proxyBeanMethods = false)
 public class AuthorizationServerConfiguration {
 
+	private static final String CUSTOM_CONSENT_PAGE_URI = "/oauth2/consent";
+	
 	@Value("${oauth2.token.issuer}") 
 	private String tokenIssuer;
 	
@@ -91,7 +93,7 @@ public class AuthorizationServerConfiguration {
 				new OAuth2ResourceOwnerPasswordAuthenticationConverter()))
 		)));
 		
-		authorizationServerConfigurer.authorizationEndpoint(authorizationEndpoint -> authorizationEndpoint.consentPage("/oauth2/consent"));
+		authorizationServerConfigurer.authorizationEndpoint(authorizationEndpoint -> authorizationEndpoint.consentPage(CUSTOM_CONSENT_PAGE_URI));
 		
 		RequestMatcher endpointsMatcher = authorizationServerConfigurer.getEndpointsMatcher();
 		

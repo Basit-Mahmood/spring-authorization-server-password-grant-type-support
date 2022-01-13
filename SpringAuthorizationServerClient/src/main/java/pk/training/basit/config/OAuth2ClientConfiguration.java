@@ -87,7 +87,7 @@ public class OAuth2ClientConfiguration {
             .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
             .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
             .redirectUri("{baseUrl}/authorized")
-            //.scope("message.read", "message.write")
+            .scope("message.read", "message.write")
             .authorizationUri(oauth2AuthorizationUri)
             .tokenUri(oauth2TokenUri)
             .build();

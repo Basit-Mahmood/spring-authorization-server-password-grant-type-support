@@ -117,7 +117,7 @@ public class OAuth2RegisteredClientConfiguration {
 		
 		TokenSettings tokenSetting = getTokenSettings();
 		
-		ClientSettings clientSettings = ClientSettings.builder().requireAuthorizationConsent(false).build();
+		ClientSettings clientSettings = ClientSettings.builder().requireAuthorizationConsent(true).build();
 		
 		RegisteredClient zapierRegisteredClient = RegisteredClient.withId("2")
 			.clientId(authorizationCodeClientId)
@@ -129,6 +129,8 @@ public class OAuth2RegisteredClientConfiguration {
 			.redirectUri(authorizationCodeClientRedirectUri)
 			.tokenSettings(tokenSetting)
 			.clientSettings(clientSettings)
+			.scope("message.read")
+			.scope("message.write")
 			.build();
 		
 		return zapierRegisteredClient;

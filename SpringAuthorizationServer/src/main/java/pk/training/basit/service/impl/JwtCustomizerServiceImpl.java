@@ -53,8 +53,14 @@ public class JwtCustomizerServiceImpl implements JwtCustomizer {
         				Map<String, Object> userAttributes = new HashMap<>();
         				userAttributes.put("userId", userId);
         				
+        				Set<String> contextAuthorizedScopes = context.getAuthorizedScopes();
+        				
         				JwtClaimsSet.Builder jwtClaimSetBuilder = context.getClaims();
-        				jwtClaimSetBuilder.claim(OAuth2ParameterNames.SCOPE, authorities);
+        				
+        				if (CollectionUtils.isEmpty(contextAuthorizedScopes)) {
+        					jwtClaimSetBuilder.claim(OAuth2ParameterNames.SCOPE, authorities);
+        				}
+        				
         				jwtClaimSetBuilder.claims(claims ->
         					userAttributes.entrySet().stream()
         					.forEach(entry -> claims.put(entry.getKey(), entry.getValue()))

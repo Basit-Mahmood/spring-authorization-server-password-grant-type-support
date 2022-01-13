@@ -32,20 +32,10 @@ public class SecurityConfiguration {
 	private UserPrincipalService userPrincipalService;
 	
 	// If no passwordEncoder bean is defined then you have to prefix password like {noop}secret1, or {bcrypt}password
-	/**
-	 * spring-security-oauth2-authorization-server:0.2.0. If I am using the following bean with h2 database then for registered 
-	 * client I am getting error password not look like bcrypt. I think it's a bug. Because JdbcRegisteredClient mapper is using
-	 * password delegating encoder which prefix the client secret with prefix {bcrypt}. And when for token it tries to matches
-	 * the password with the defined encoder which is bcrypt. Then there is an error password not look like bcrypt.
-	 * 
-	 * To reporduce issue. Uncomment the following bean. remove the the {bcrypt} prefix from database/scripts/test-data.sql and
-	 * then try to get the token.
-	 * 
-	 * JdbcRegisteredClientRepository$RegisteredClientParametersMapper
-	 */
+	// if not static spring boot 2.6.x gives bean currently in creation error at line .passwordEncoder(passwordEncoder()) in configureGlobal() method
 	/**
 	@Bean
-    public PasswordEncoder passwordEncoder() {
+    public static PasswordEncoder passwordEncoder() {		
 		LOGGER.debug("in passwordEncoder");
         return new BCryptPasswordEncoder();
     };
