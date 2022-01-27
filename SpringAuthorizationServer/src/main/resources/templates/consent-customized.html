@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="https://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{fragments/mainLayout}">
+	
+	<head>
+	    <title th:text="#{title.consent}"></title>
+	    <script type="text/javascript" th:src="@{/js/jquery-util.js}" ></script>
+	    
+	    <script>
+			function cancelConsent() {
+				
+				let $consentForm = $("#consent_form");
+				if ($consentForm.length > 0) {
+					removeHiddenFieldFromForm($consentForm, "", "scope", "")
+				}
+				
+				$consentForm.trigger("reset");
+				$consentForm.submit();
+			}
+		</script>
+	</head>
+	<body>
+	
+		<div layout:fragment="content" th:remove="tag">
+			
+			<div class="bg-white w-50 ml-0 mr-0 mx-auto text-center border rounded mt-4 pb-4">
+		      		
+		      	<div class="row text-center mt-3">
+		      		<div class="col">
+		      			<hr class="border-1">
+		      		</div>
+		      	</div>
+		      		
+		      	<div class="client-img-logo mt-3 mb-3">
+		      		<img th:src="@{/image/{clientName}.png(clientName=${clientName})}" alt="memorynotfound logo" style="width:2rem;"/>
+		      	</div>
+		      		
+		      	<div class="row text-center ms-1 me-1">
+		      		<div class="col">
+		      			<h5>
+		      				<span th:text="#{message.the.application}" th:remove="tag">The application</span>
+			                <span class="fw-bold text-primary" th:text="${clientName}"></span>
+			                <span th:text="#{message.wants.to.access.your.app.account}" th:remove="tag">wants to access your application account</span>
+		      			</h5>
+		      		</div>
+		      	</div>
+		      		
+		      	<div class="row text-center">
+		      		<div class="col">
+		      			<h6>
+		      				<span class="font-weight-bold" th:text="${#authentication.principal.username}"></span>
+		      			</h6>
+		      		</div>
+		      	</div>
+		      		
+		      	<div class="row text-start mt-2 ms-1">
+		      		<div class="col">
+		      			<p class="fw-bold">
+		      				<span th:text="#{message.this.will.allow}" th:remove="tag">This will allow</span>
+		      				<span class="text-primary" th:text="${clientName}"></span>
+		      				<span th:text="|#{message.to}:|" th:remove="tag">to:</span> 
+		      			</p>
+		      		</div>
+		      	</div>
+		      		
+	      		<div class="row text-start">
+	      			<div class="col">
+	      				<ul class="list-group">
+	      					<li th:each="scope: ${scopes}" class="list-group-item border-0">
+	      						<div class="row ms-1">
+	      							<div class="col-1 list-group-item-img">
+	      								<img th:src="@{/image/default-scope-icon.png}" alt="memorynotfound logo" style="width:1rem"/>
+	      							</div>
+	      							<div class="col-10 list-group-item-text">
+	      								<span th:text="#{${scope.scope + '.description'}}" th:remove="tag"></span>
+	      							</div>
+	      						</div>
+	      					</li>
+						</ul>
+	      			</div>
+	      		</div>
+		      		
+	      		<div class="row text-start mt-2 ms-1">
+	      			<div class="col">
+	      				<p class="fw-bold">
+	      					<span th:text="#{message.make.sure.you.trust}" th:remove="tag">Make sure you trust</span> 
+	      					<span th:text="${clientName}"></span></p>
+	      			</div>
+	      		</div>
+		      		
+	      		<div class="row">
+	      			<div class="col text-center">
+	      				<form id="consent_form" name="consent_form" method="post" th:action="@{/oauth2/authorize}">
+	      					<input type="hidden" name="client_id" th:value="${clientId}">
+		                	<input type="hidden" name="state" th:value="${state}">
+		                	<th:block th:each="scope: ${scopes}">
+		                		<input type="hidden" th:value="${scope.scope}" name="scope" />
+		                	</th:block>
+		                	
+		                	<div class="row text-center mt-2 ms-1 me-1">
+				      			<div class="col">
+				      				<div class="form-group">
+					                    <button id="submit-consent" class="btn btn-outline-primary btn-sm w-100" th:text="#{button.allow}" type="submit" >
+					                    	Allow
+					                    </button>
+					                </div>
+				      			</div>
+				      			<div class="col">
+				      				<div class="form-group">
+					                    <button id="cancel-consent" class="btn btn-outline-primary btn-sm w-100" th:text="#{button.cancel}" type="button" onclick="cancelConsent();">
+					                    	Cancel
+					                    </button>
+					                </div>
+				      			</div>
+				      		</div>
+	      				</form>
+	      			</div>
+	      		</div>
+			</div>
+		</div>
+	</body>
+</html>

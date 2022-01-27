@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 
 import pk.training.basit.service.UserPrincipalService;
@@ -52,12 +53,17 @@ public class SecurityConfiguration {
 	}
 	
 	@Bean
+	public WebSecurityCustomizer webSecurityCustomizer() {
+		return (web) -> web.ignoring().antMatchers("/webjars/**", "/image/**");
+	}
+	
+	@Bean
 	public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
 		LOGGER.debug("in configure HttpSecurity");
 		http.authorizeRequests(authorizeRequests -> authorizeRequests.requestMatchers(EndpointRequest.toAnyEndpoint(),PathRequest.toH2Console()).permitAll()
 		    .anyRequest().authenticated()
 		)
-		.formLogin(withDefaults())
+		.formLogin(form -> form.loginPage("/login").failureUrl("/login-error").permitAll())
 		.csrf().ignoringRequestMatchers(PathRequest.toH2Console())
 		.and().headers().frameOptions().sameOrigin();
 		

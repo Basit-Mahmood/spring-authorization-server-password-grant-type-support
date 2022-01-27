@@ -56,13 +56,16 @@ public class AuthorizationConsentController {
 			}
 		}
 
+		String registeredClientName = registeredClient.getClientName();
+		
 		model.addAttribute("clientId", clientId);
+		model.addAttribute("clientName", registeredClientName);
 		model.addAttribute("state", state);
 		model.addAttribute("scopes", withDescription(scopesToApprove));
 		model.addAttribute("previouslyApprovedScopes", withDescription(previouslyApprovedScopes));
 		model.addAttribute("principalName", principal.getName());
 
-		return "consent";
+		return "consent-customized";
 	}
 
 	private static Set<ScopeWithDescription> withDescription(Set<String> scopes) {

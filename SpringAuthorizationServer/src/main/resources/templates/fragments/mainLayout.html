@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+	
+	<head>
+	    <meta charset="utf-8"/>
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+	
+		<title layout:title-pattern="$LAYOUT_TITLE :: $CONTENT_TITLE" th:text="#{title.app}"></title>
+	    <link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.css" th:href="@{/webjars/bootstrap/css/bootstrap.css}" />
+	    <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.js}" ></script>
+	    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.js}" ></script>
+	</head>
+	
+	<body>
+	    <th:block th:replace="fragments/header :: header"/>
+	    <div class="container">
+	    	<th:block layout:fragment="content"/>
+	    </div>
+	    <th:block th:replace="fragments/footer :: footer"/>
+	</body>
+</html>

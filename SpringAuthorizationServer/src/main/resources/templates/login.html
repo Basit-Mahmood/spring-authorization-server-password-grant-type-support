@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="https://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{fragments/mainLayout}">
+    
+    <head>
+	    <title th:text="#{title.login}"></title>
+	</head>
+	
+    <body>
+    
+    	<div layout:fragment="content" th:remove="tag">
+    		
+    		<div class="w-50 ml-0 mr-0 mx-auto text-center mt-4 pb-4">
+        	
+        		<div class=" row app-logo">
+        			<img class="img-fluid" th:src="@{/image/app-logo.jpg}" alt="memorynotfound logo" style="width:15rem;margin-left:9rem;" />
+		    	</div>
+		    	
+		    	<div th:if="${loginError}" class="row mt-5" >
+		    		<div class="alert alert-danger" role="alert">
+						<span th:text="#{error.incorrect.email.password}" th:remove="tag">Incorrect email and/or password. Please try again.</span>
+					</div>
+		    	</div>
+		    	
+		    	<div class="row" th:classappend="${loginError} ? mt-2 : mt-5" >
+		    		
+		    		<form th:action="@{/login}" method="post">
+		    			<div class="row">
+		    				<input type="text" id="usernameId"  name="username" class="form-control form-control-lg mb-4" th:placeholder="#{placeholder.username}" />
+		    			</div>
+		    			
+		    			<div class="row">
+		    				<input type="password" id="password"  name="password" class="form-control form-control-lg mb-4" th:placeholder="#{placeholder.password}" />
+		    			</div>
+		    			
+		    			<div class="row">
+		    				<button type="submit" class="btn btn-primary btn-lg" th:text="#{button.login}">Login</button>
+		    			</div>
+		    		</form>
+		    	</div>
+        	</div>
+    		
+    	</div>
+    
+    </body>
+</html>
