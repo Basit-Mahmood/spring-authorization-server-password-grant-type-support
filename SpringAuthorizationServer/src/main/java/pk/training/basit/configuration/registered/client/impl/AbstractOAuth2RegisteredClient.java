@@ -3,6 +3,7 @@ package pk.training.basit.configuration.registered.client.impl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.core.env.Environment;
+import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.config.TokenSettings;
 
 import pk.training.basit.configuration.registered.client.OAuth2RegisteredClient;
@@ -20,6 +21,11 @@ public abstract class AbstractOAuth2RegisteredClient implements OAuth2Registered
 		this.oauth2TokenSettings = oauth2TokenSettings;
 	}
 	
+	protected abstract String getId();
+	protected abstract String getClientId();
+	protected abstract String getClientName();
+	protected abstract String getClientSecret();
+	
 	protected String getClientProperty(String client, String property) {
 		
 		LOGGER.debug("in getClientProperty");
@@ -32,6 +38,26 @@ public abstract class AbstractOAuth2RegisteredClient implements OAuth2Registered
 	
 	protected TokenSettings getTokenSettings() {
 		return oauth2TokenSettings.getTokenSettings();
+	}
+	
+	protected RegisteredClient.Builder getRegisteredClientBuilder() {
+		
+		String id = getId();
+		String clientId = getClientId();
+		String clientName = getClientName();;
+		String clientSecret = getClientSecret();
+		
+		TokenSettings tokenSetting = getTokenSettings();
+		
+		RegisteredClient.Builder registeredClientBuilder = RegisteredClient.withId(id)
+			.clientId(clientId)
+			.clientName(clientName)
+			.clientSecret(clientSecret)
+			.tokenSettings(tokenSetting);
+		
+		return registeredClientBuilder;
+		
+		
 	}
 
 }

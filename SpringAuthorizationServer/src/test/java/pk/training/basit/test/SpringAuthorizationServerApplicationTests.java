@@ -1,13 +1,13 @@
-package pk.training.basit;
+package pk.training.basit.test;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SpringAuthorizationServerApplicationTests {
+public class SpringAuthorizationServerApplicationTests {
 
 	@Test
 	void contextLoads() {
 	}
-
+	
 }

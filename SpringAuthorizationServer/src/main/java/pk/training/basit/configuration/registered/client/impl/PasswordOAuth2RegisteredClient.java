@@ -6,7 +6,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
-import org.springframework.security.oauth2.server.authorization.config.TokenSettings;
 import org.springframework.stereotype.Component;
 
 import pk.training.basit.configuration.token.OAuth2TokenSettings;
@@ -28,24 +27,37 @@ public class PasswordOAuth2RegisteredClient extends AbstractOAuth2RegisteredClie
 		
 		LOGGER.debug("In PasswordOAuth2RegisteredClient.getRegisteredClient()");
 
-		String passwordClientId = getClientProperty(PASSWORD_CLIENT, ID);
-		String passwordClientName = getClientProperty(PASSWORD_CLIENT, NAME);
-		String passwordClientSecret = getClientProperty(PASSWORD_CLIENT, SECRET);
-		
-		TokenSettings tokenSetting = getTokenSettings();
-		
-		RegisteredClient passwordRegisteredClient = RegisteredClient.withId("3")
-			.clientId(passwordClientId)
-			.clientName(passwordClientName)
-			.clientSecret(passwordClientSecret)
-			.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)	
+		RegisteredClient.Builder registeredClientBuilder = getRegisteredClientBuilder();
+		RegisteredClient passwordRegisteredClient = registeredClientBuilder.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)	
 			.authorizationGrantType(AuthorizationGrantType.PASSWORD)
 			.authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-			.tokenSettings(tokenSetting)
 			.build();
 		
 		return passwordRegisteredClient;
 		
+	}
+	
+	@Override
+	public String getId() {
+		return "3";
+	}
+	
+	@Override
+	public String getClientId() {
+		String passwordClientId = getClientProperty(PASSWORD_CLIENT, ID);
+		return passwordClientId;
+	}
+	
+	@Override
+	public String getClientName() {
+		String passwordClientName = getClientProperty(PASSWORD_CLIENT, NAME);
+		return passwordClientName;
+	}
+	
+	@Override
+	public String getClientSecret() {
+		String passwordClientSecret = getClientProperty(PASSWORD_CLIENT, SECRET);
+		return passwordClientSecret;
 	}
 
 }

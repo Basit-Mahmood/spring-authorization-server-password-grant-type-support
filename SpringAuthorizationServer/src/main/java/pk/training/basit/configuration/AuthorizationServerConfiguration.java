@@ -3,7 +3,6 @@ package pk.training.basit.configuration;
 import java.util.Arrays;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,6 +40,7 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
+import pk.training.basit.configuration.federated.identity.FederatedIdentityConfigurer;
 import pk.training.basit.configuration.jose.Jwks;
 import pk.training.basit.jackson2.mixin.AuditDeletedDateMixin;
 import pk.training.basit.jackson2.mixin.LongMixin;
@@ -51,7 +51,9 @@ import pk.training.basit.jpa.entity.UserAuthority;
 import pk.training.basit.jpa.entity.UserPrincipal;
 import pk.training.basit.oauth2.authentication.OAuth2ResourceOwnerPasswordAuthenticationConverter;
 import pk.training.basit.oauth2.authentication.OAuth2ResourceOwnerPasswordAuthenticationProvider;
-import pk.training.basit.service.JwtCustomizer;
+import pk.training.basit.oauth2.jwt.customizer.JwtCustomizer;
+import pk.training.basit.oauth2.jwt.customizer.JwtCustomizerHandler;
+import pk.training.basit.oauth2.jwt.customizer.impl.JwtCustomizerImpl;
 
 @Configuration(proxyBeanMethods = false)
 public class AuthorizationServerConfiguration {
@@ -60,9 +62,6 @@ public class AuthorizationServerConfiguration {
 	
 	@Value("${oauth2.token.issuer}") 
 	private String tokenIssuer;
-	
-	@Autowired 
-	private JwtCustomizer jwtCustomizer;
 	
 	@Bean
 	@Order(Ordered.HIGHEST_PRECEDENCE)
@@ -101,7 +100,9 @@ public class AuthorizationServerConfiguration {
 			.requestMatcher(endpointsMatcher)
 			.authorizeRequests(authorizeRequests -> authorizeRequests.anyRequest().authenticated())
 			.csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher))
-			.apply(authorizationServerConfigurer);
+			.apply(authorizationServerConfigurer)
+			.and()
+			.apply(new FederatedIdentityConfigurer());
 		
 		SecurityFilterChain securityFilterChain = http.formLogin(Customizer.withDefaults()).build();
 		
@@ -160,6 +161,9 @@ public class AuthorizationServerConfiguration {
 	
 	@Bean
     public OAuth2TokenCustomizer<JwtEncodingContext> buildCustomizer() {
+		
+		JwtCustomizerHandler jwtCustomizerHandler = JwtCustomizerHandler.getJwtCustomizerHandler();
+		JwtCustomizer jwtCustomizer = new JwtCustomizerImpl(jwtCustomizerHandler);
         OAuth2TokenCustomizer<JwtEncodingContext> customizer = (context) -> {
         	jwtCustomizer.customizeToken(context);
         };

@@ -38,6 +38,17 @@
 		    			<div class="row">
 		    				<button type="submit" class="btn btn-primary btn-lg" th:text="#{button.login}">Login</button>
 		    			</div>
+		    			
+		    			<div class="mt-3" th:if="${@environment.getProperty('idp.login.enable')}">
+		    				<a class="btn btn-outline-primary" th:href="@{/oauth2/authorization/google-idp}" role="link" style="text-transform: none;">
+            					<img width="20" style="margin-right: 5px;" alt="Sign in with Google" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
+            					Sign in with Google
+        					</a>
+        					<a class="btn btn-outline-primary" th:href="@{/oauth2/authorization/github-idp}" role="link" style="text-transform: none;">
+            					<img width="24" style="margin-right: 5px;" alt="Sign in with GitHub" src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" />
+            					Sign in with Github
+        					</a>
+		    			</div>
 		    		</form>
 		    	</div>
         	</div>

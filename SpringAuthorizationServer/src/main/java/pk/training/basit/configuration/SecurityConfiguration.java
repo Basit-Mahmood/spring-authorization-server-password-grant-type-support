@@ -1,7 +1,5 @@
 package pk.training.basit.configuration;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +14,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 
+import pk.training.basit.configuration.federated.identity.FederatedIdentityConfigurer;
+import pk.training.basit.configuration.federated.identity.UserRepositoryOAuth2UserHandler;
 import pk.training.basit.service.UserPrincipalService;
 
 @EnableGlobalMethodSecurity(
@@ -60,12 +60,17 @@ public class SecurityConfiguration {
 	@Bean
 	public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
 		LOGGER.debug("in configure HttpSecurity");
+		
+		FederatedIdentityConfigurer federatedIdentityConfigurer = new FederatedIdentityConfigurer().oauth2UserHandler(new UserRepositoryOAuth2UserHandler());
+		
 		http.authorizeRequests(authorizeRequests -> authorizeRequests.requestMatchers(EndpointRequest.toAnyEndpoint(),PathRequest.toH2Console()).permitAll()
 		    .anyRequest().authenticated()
 		)
 		.formLogin(form -> form.loginPage("/login").failureUrl("/login-error").permitAll())
 		.csrf().ignoringRequestMatchers(PathRequest.toH2Console())
-		.and().headers().frameOptions().sameOrigin();
+		.and().headers().frameOptions().sameOrigin()
+		.and()
+		.apply(federatedIdentityConfigurer);
 		
 		return http.build();
 	}
