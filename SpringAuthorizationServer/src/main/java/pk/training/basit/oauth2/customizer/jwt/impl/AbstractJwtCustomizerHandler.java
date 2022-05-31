@@ -1,13 +1,13 @@
-package pk.training.basit.oauth2.jwt.customizer.impl;
+package pk.training.basit.oauth2.customizer.jwt.impl;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.OAuth2TokenType;
-import org.springframework.security.oauth2.server.authorization.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.authentication.OAuth2ClientAuthenticationToken;
+import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 
-import pk.training.basit.oauth2.jwt.customizer.JwtCustomizerHandler;
+import pk.training.basit.oauth2.customizer.jwt.JwtCustomizerHandler;
 
 public abstract class AbstractJwtCustomizerHandler implements JwtCustomizerHandler {
 

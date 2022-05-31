@@ -15,17 +15,19 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.jackson2.SecurityJackson2Modules;
+import org.springframework.security.oauth2.core.OAuth2Token;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationConsentService;
 import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationService;
-import org.springframework.security.oauth2.server.authorization.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
-import org.springframework.security.oauth2.server.authorization.OAuth2TokenCustomizer;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.ProviderSettings;
 import org.springframework.security.oauth2.server.authorization.jackson2.OAuth2AuthorizationServerJackson2Module;
+import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
+import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenClaimsContext;
+import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
+import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
 import org.springframework.security.oauth2.server.authorization.web.authentication.DelegatingAuthenticationConverter;
 import org.springframework.security.oauth2.server.authorization.web.authentication.OAuth2AuthorizationCodeAuthenticationConverter;
 import org.springframework.security.oauth2.server.authorization.web.authentication.OAuth2ClientCredentialsAuthenticationConverter;
@@ -51,9 +53,11 @@ import pk.training.basit.jpa.entity.UserAuthority;
 import pk.training.basit.jpa.entity.UserPrincipal;
 import pk.training.basit.oauth2.authentication.OAuth2ResourceOwnerPasswordAuthenticationConverter;
 import pk.training.basit.oauth2.authentication.OAuth2ResourceOwnerPasswordAuthenticationProvider;
-import pk.training.basit.oauth2.jwt.customizer.JwtCustomizer;
-import pk.training.basit.oauth2.jwt.customizer.JwtCustomizerHandler;
-import pk.training.basit.oauth2.jwt.customizer.impl.JwtCustomizerImpl;
+import pk.training.basit.oauth2.customizer.jwt.JwtCustomizer;
+import pk.training.basit.oauth2.customizer.jwt.JwtCustomizerHandler;
+import pk.training.basit.oauth2.customizer.jwt.impl.JwtCustomizerImpl;
+import pk.training.basit.oauth2.customizer.token.claims.OAuth2TokenClaimsCustomizer;
+import pk.training.basit.oauth2.customizer.token.claims.impl.OAuth2TokenClaimsCustomizerImpl;
 
 @Configuration(proxyBeanMethods = false)
 public class AuthorizationServerConfiguration {
@@ -160,7 +164,7 @@ public class AuthorizationServerConfiguration {
 	}
 	
 	@Bean
-    public OAuth2TokenCustomizer<JwtEncodingContext> buildCustomizer() {
+    public OAuth2TokenCustomizer<JwtEncodingContext> buildJwtCustomizer() {
 		
 		JwtCustomizerHandler jwtCustomizerHandler = JwtCustomizerHandler.getJwtCustomizerHandler();
 		JwtCustomizer jwtCustomizer = new JwtCustomizerImpl(jwtCustomizerHandler);
@@ -171,21 +175,26 @@ public class AuthorizationServerConfiguration {
         return customizer;
     }
 	
+	@Bean
+    public OAuth2TokenCustomizer<OAuth2TokenClaimsContext> buildOAuth2TokenClaimsCustomizer() {
+		
+		OAuth2TokenClaimsCustomizer oauth2TokenClaimsCustomizer = new OAuth2TokenClaimsCustomizerImpl();
+        OAuth2TokenCustomizer<OAuth2TokenClaimsContext> customizer = (context) -> {
+        	oauth2TokenClaimsCustomizer.customizeTokenClaims(context);
+        };
+        
+        return customizer;
+    }
+	
+	@SuppressWarnings("unchecked")
 	private void addCustomOAuth2ResourceOwnerPasswordAuthenticationProvider(HttpSecurity http) {
 		
 		AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
-		ProviderSettings providerSettings = http.getSharedObject(ProviderSettings.class);
 		OAuth2AuthorizationService authorizationService = http.getSharedObject(OAuth2AuthorizationService.class);
-		JwtEncoder jwtEncoder = http.getSharedObject(JwtEncoder.class);
-		OAuth2TokenCustomizer<JwtEncodingContext> jwtCustomizer = buildCustomizer();
+		OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator = http.getSharedObject(OAuth2TokenGenerator.class);
 		
 		OAuth2ResourceOwnerPasswordAuthenticationProvider resourceOwnerPasswordAuthenticationProvider =
-				new OAuth2ResourceOwnerPasswordAuthenticationProvider(authenticationManager, authorizationService, jwtEncoder);
-		if (jwtCustomizer != null) {
-			resourceOwnerPasswordAuthenticationProvider.setJwtCustomizer(jwtCustomizer);
-		}
-		
-		resourceOwnerPasswordAuthenticationProvider.setProviderSettings(providerSettings);
+				new OAuth2ResourceOwnerPasswordAuthenticationProvider(authenticationManager, authorizationService, tokenGenerator);
 		
 		// This will add new authentication provider in the list of existing authentication providers.
 		http.authenticationProvider(resourceOwnerPasswordAuthenticationProvider);

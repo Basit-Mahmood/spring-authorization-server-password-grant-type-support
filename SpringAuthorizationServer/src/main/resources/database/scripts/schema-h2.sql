@@ -1,5 +1,5 @@
 create table UserPrincipal (
-  	UserId BIGINT NOT NULL IDENTITY PRIMARY KEY,
+  	UserId BIGINT auto_increment NOT NULL PRIMARY KEY,
   	Username varchar2(36) NOT NULL,
   	HashedPassword nvarchar2(128) NOT NULL,
   	AccountNonExpired boolean NOT NULL,

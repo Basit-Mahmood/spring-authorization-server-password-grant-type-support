@@ -1,4 +1,4 @@
-package pk.training.basit.oauth2.jwt.customizer.impl;
+package pk.training.basit.oauth2.customizer.jwt.impl;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -14,9 +14,9 @@ import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
-import org.springframework.security.oauth2.server.authorization.JwtEncodingContext;
+import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 
-import pk.training.basit.oauth2.jwt.customizer.JwtCustomizerHandler;
+import pk.training.basit.oauth2.customizer.jwt.JwtCustomizerHandler;
 
 public class OAuth2AuthenticationTokenJwtCustomizerHandler extends AbstractJwtCustomizerHandler {
 

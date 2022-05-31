@@ -1,4 +1,4 @@
-package pk.training.basit.oauth2.jwt.customizer.impl;
+package pk.training.basit.oauth2.customizer.jwt.impl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,11 +10,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
-import org.springframework.security.oauth2.server.authorization.JwtEncodingContext;
+import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.util.CollectionUtils;
 
 import pk.training.basit.jpa.entity.UserPrincipal;
-import pk.training.basit.oauth2.jwt.customizer.JwtCustomizerHandler;
+import pk.training.basit.oauth2.customizer.jwt.JwtCustomizerHandler;
 
 public class UsernamePasswordAuthenticationTokenJwtCustomizerHandler extends AbstractJwtCustomizerHandler {
 

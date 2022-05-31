@@ -1,10 +1,10 @@
-package pk.training.basit.oauth2.jwt.customizer;
+package pk.training.basit.oauth2.customizer.jwt;
 
-import org.springframework.security.oauth2.server.authorization.JwtEncodingContext;
+import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 
-import pk.training.basit.oauth2.jwt.customizer.impl.DefaultJwtCustomizerHandler;
-import pk.training.basit.oauth2.jwt.customizer.impl.OAuth2AuthenticationTokenJwtCustomizerHandler;
-import pk.training.basit.oauth2.jwt.customizer.impl.UsernamePasswordAuthenticationTokenJwtCustomizerHandler;
+import pk.training.basit.oauth2.customizer.jwt.impl.DefaultJwtCustomizerHandler;
+import pk.training.basit.oauth2.customizer.jwt.impl.OAuth2AuthenticationTokenJwtCustomizerHandler;
+import pk.training.basit.oauth2.customizer.jwt.impl.UsernamePasswordAuthenticationTokenJwtCustomizerHandler;
 
 public interface JwtCustomizerHandler {
 
