@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.core.env.Environment;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
-import org.springframework.security.oauth2.server.authorization.config.TokenSettings;
+import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 
 import pk.training.basit.configuration.registered.client.OAuth2RegisteredClient;
 import pk.training.basit.configuration.token.OAuth2TokenSettings;
