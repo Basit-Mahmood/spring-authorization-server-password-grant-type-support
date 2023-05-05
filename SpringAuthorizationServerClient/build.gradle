@@ -1,5 +1,5 @@
 plugins {
-	id 'org.springframework.boot' version '2.7.6'
+	id 'org.springframework.boot' version '2.7.11'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 	id 'java'
 	id 'war'
@@ -22,7 +22,7 @@ dependencies {
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
 	implementation group: 'org.webjars', name: 'webjars-locator', version: '0.46'
 	implementation group: 'org.webjars', name: 'bootstrap', version: '5.2.3'
-	implementation group: 'org.webjars', name: 'jquery', version: '3.6.1'
+	implementation group: 'org.webjars', name: 'jquery', version: '3.6.4'
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'io.projectreactor:reactor-test'
